@@ -1,3 +1,55 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+      --background: #ffffff; /* white */
+      --foreground: #020817; /* dark gray */
+  
+      --primary: #7886A4; /* dark blue */
+      --primary-foreground: #f8fafc; /* light gray */
+  
+      --secondary: #f1f5f9; /* light blue */
+      --secondary-foreground: #0f172a; /* dark blue */
+  
+      --accent: #f1f5f9; /* light blue */
+      --accent-foreground: #0f172a; /* dark blue */
+  
+      --destructive: #dc2626; /* red */
+      --destructive-foreground: #f8fafc; /* light gray */
+  
+      --border: #e2e8f0; /* light gray */
+      --input: #e2e8f0; /* light gray */
+      --ring: #020817; /* dark gray */
+      --pagination-button: #020817; /* dark gray */
+
+      --popover: #ffffff; /* white */
+      --popover-foreground: #020817; /* dark gray */
+    }
+  
+    .dark {
+      --background: #020817; /* dark gray */
+      --foreground: #f8fafc; /* light gray */
+  
+      --primary: #f8fafc; /* light gray */
+      --primary-foreground: #0f172a; /* dark blue */
+  
+      --secondary: #1e293b; /* dark blue */
+      --secondary-foreground: #f8fafc; /* light gray */
+  
+      --accent: #1e293b; /* dark blue */
+      --accent-foreground: #f8fafc; /* light gray */
+  
+      --destructive: #7f1d1d; /* dark red */
+      --destructive-foreground: #f8fafc; /* light gray */
+  
+      --border: #1e293b; /* dark blue */
+      --input: #1e293b; /* dark blue */
+      --ring: #e2e8f0; /* light gray */
+      --pagination-button: #f8fafc; /* light gray */
+
+      --popover: #020817; /* dark gray */
+      --popover-foreground: #f8fafc; /* light gray */
+    }
+  }

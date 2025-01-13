@@ -1,26 +1,62 @@
-'use client';
-import { useState } from 'react';
-import Navbar from './ui/Navbar';
-import SearchInput from './ui/SearchInput';
+"use client";
+import { useParams, useRouter } from "next/navigation";
+import { ContactDetails } from "./ContactDetails";
+import { ContactList } from './Contacts';
+import Navbar from "./other/Navbar";
+import SearchInput from "./other/SearchInput";
 
-const dummyData = [
-  { id: 1, name: 'Contact 1', details: 'Details for Contact 1' },
-  { id: 2, name: 'Contact 2', details: 'Details for Contact 2' },
-  { id: 3, name: 'Contact 3', details: 'Details for Contact 3' },
-  { id: 4, name: 'Contact 4', details: 'Details for Contact 4' },
-  // Add more dummy data as needed
-];
+type PanelState = {
+  type: 'contact' | 'company' | null;
+  id: string | null;
+};
 
 export function DualView() {
+  const router = useRouter();
+  const params = useParams();
+
+  // Parse URL parameters into panel states
+  const leftPanel: PanelState = {
+    type: params?.leftType as PanelState['type'] || null,
+    id: params?.leftId as string || null
+  };
+
+  const rightPanel: PanelState = {
+    type: params?.rightType as PanelState['type'] || null,
+    id: params?.rightId as string || null
+  };
+
+  const handlePanelSelect = (id: string | null, type: PanelState['type'], side: 'left' | 'right') => {
+    if (side === 'left') {
+      router.push(`/dual-view/${type}/${id || null}/${rightPanel.type || 'contact'}/${rightPanel.id || null}`);
+    } else {
+      router.push(`/dual-view/${leftPanel.type || 'contact'}/${leftPanel.id || null}/${type}/${id || null}`);
+    }
+  };
+
+  const renderPanel = (panel: PanelState, side: 'left' | 'right') => {
+    if (panel.type === 'contact') {
+      return (panel.id && panel.id !== 'null') ? (
+        <ContactDetails contactId={Number(panel.id)} />
+      ) : (
+        <ContactList onContactClick={(id) => handlePanelSelect(String(id), 'contact', side)} />
+      );
+    }
+    // Add more conditions for other types (company, etc.)
+    return <ContactList onContactClick={(id) => handlePanelSelect(String(id), 'contact', side)} />;
+  };
+
   return (
     <div className="min-h-screen">
       <Navbar />
-      <main className="pt-3 flex flex-row-">
-        <div className="w-[50%] mx-auto px-4">
-          <SearchInput />
+      <main className="pt-3 flex">
+        <div className="w-1/2 px-4">
+          <SearchInput onSelect={(id) => handlePanelSelect(String(id), 'contact', 'left')} />
+          {renderPanel(leftPanel, 'left')}
         </div>
-        <div className="w-[50%] mx-auto px-4">
-          <SearchInput />
+        
+        <div className="w-1/2 px-4">
+          <SearchInput onSelect={(id) => handlePanelSelect(String(id), 'contact', 'right')} />
+          {renderPanel(rightPanel, 'right')}
         </div>
       </main>
     </div>

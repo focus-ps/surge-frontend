@@ -1,9 +1,5 @@
-import { DualView } from '@/components/DualView';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
-  return (
-    <main>
-      <DualView />
-    </main>
-  );
+export default function DualViewPage() {
+  redirect('/dual-view/contact/null/contact/null');
 }

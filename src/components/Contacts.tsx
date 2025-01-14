@@ -20,11 +20,10 @@ import {
   FOCUS_FIT_OPTIONS,
 } from "@/constants/options";
 import { useState } from "react";
-import { memo } from "react";
 import ContactTable from "./ContactTable";
 
 
-export function ContactList({onContactClick}: {onContactClick: (id: number) => void}) {
+export function Contacts({onContactClick}: {onContactClick: (id: number) => void}) {
   // Add state for filters at the top of your component
   const [filters, setFilters] = useState<{
     action_types: string[];
@@ -42,9 +41,20 @@ export function ContactList({onContactClick}: {onContactClick: (id: number) => v
   const [selectedCapability, setSelectedCapability] = useState("");
   const [selectedFit, setSelectedFit] = useState("");
   const [selectedAction, setSelectedAction] = useState("");
- 
   const [search, setSearch] = useState("");
 
+  const handleClearFilters = () => {
+    setSelectedCustomerType("");
+    setSelectedCapability("");
+    setSelectedFit("");
+    setSelectedAction("");
+    setFilters({
+      action_types: [],
+      capabilities: [],
+      customer_types: [],
+      focus_fit: [],
+    });
+  };
 
   return (
     <div className="p-6">
@@ -54,18 +64,7 @@ export function ContactList({onContactClick}: {onContactClick: (id: number) => v
           <Button
             variant="outline"
             className="flex items-center gap-2"
-            onClick={() => {
-              setSelectedCustomerType("");
-              setSelectedCapability("");
-              setSelectedFit("");
-              setSelectedAction("");
-              setFilters({
-                action_types: [],
-                capabilities: [],
-                customer_types: [],
-                focus_fit: [],
-              });
-            }}
+            onClick={handleClearFilters}
           >
             <Filter className="h-4 w-4" />
             Clear All Filters

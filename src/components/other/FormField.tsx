@@ -21,7 +21,7 @@ interface FormFieldProps {
 export function FormField({
   label,
   type = "text",
-  value,
+  value = "",
   options,
   required,
   className = "",
@@ -39,7 +39,6 @@ export function FormField({
           options={options}
           onChange={(
             selected: MultiValue<any>,
-            actionMeta: ActionMeta<any>
           ) => {
             onChange?.(selected.map((option) => option.value));
           }}
@@ -49,7 +48,7 @@ export function FormField({
       ) : type === "select" ? (
         <select
           className="w-full border rounded p-2 text-gray-900 dark:text-gray-100 placeholder:text-gray-400"
-          value={value}
+          value={value?.toString() || ""}
           onChange={(e) => {
             onChange?.(e.target.value);
           }}
@@ -66,10 +65,10 @@ export function FormField({
       ) : (
         <input
           type={type}
-          value={value}
+          value={value?.toString() || ""}
           placeholder={placeholder}
           className="w-full border rounded p-2 text-gray-900 dark:text-gray-100 placeholder:text-gray-400"
-          readOnly
+          onChange={(e) => onChange?.(e.target.value)}
         />
       )}
     </div>

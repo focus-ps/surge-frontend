@@ -6,15 +6,13 @@ import { useFilterContacts } from "@/hooks/useContacts";
 import { useState } from "react";
 import router from "next/router";
 
-export default function ContactTable({
-  filters,
-  search,
-  onContactClick
-}: {
-  filters: {};
+interface ContactTableProps {
+  filters: any;
   search: string;
-  onContactClick?: (id:number) => void;
-}) {
+  onContactClick: (id: number) => void;
+}
+
+export default function ContactTable({ filters, search, onContactClick }: ContactTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 25;
 
@@ -53,7 +51,7 @@ export default function ContactTable({
               <tr
                 key={contact.id}
                 className="border-t dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer"
-                onClick={() => onContactClick?.(contact.id)}>
+                onClick={() => onContactClick(contact.id)}>
                 <td className="p-4">
                   <Checkbox className="dark:border-gray-600" />
                 </td>

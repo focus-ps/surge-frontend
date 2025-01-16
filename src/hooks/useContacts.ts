@@ -2,8 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   contactsApi,
   Contact,
-  CustomerType,
-  ActionType,
 } from "../app/api/contact";
 import { apiClient } from "@/app/api/client";
 

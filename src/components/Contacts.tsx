@@ -3,7 +3,6 @@
 import { Search, Plus, Filter, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -12,15 +11,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Contact } from "@/app/api/contact";
-import { useFilterContacts } from "@/hooks/useContacts";
 import {
   ACTION_OPTIONS,
   CUSTOMER_TYPE_OPTIONS,
   FOCUS_FIT_OPTIONS,
 } from "@/constants/options";
 import { useState } from "react";
-import ContactTable from "./ContactTable";
+import ContactTable from "./ContactsTable";
 
 
 export function Contacts({onContactClick}: {onContactClick: (id: number) => void}) {

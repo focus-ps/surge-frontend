@@ -4,10 +4,12 @@ import { useParams, useRouter } from "next/navigation";
 import { ContactDetails } from "./ContactDetails";
 import { Contacts } from './Contacts';
 import Navbar from "./other/Navbar";
-import SearchInput from "./other/SearchInput";
+import SearchInput from "./other/GlobalSearch";
 import { Whiteboard } from "./Whiteboard";
+import { Companies } from "./Companies";
+import { CompanyDetails } from "./CompanyDetails";
 
-type PanelType = 'contact' | 'company' | 'whiteboard' | null;
+type PanelType = 'contacts' | 'companies' | 'whiteboard' | null;
 
 type PanelState = {
   type: PanelType;
@@ -31,26 +33,30 @@ export function DualView() {
 
   const handlePanelSelect = (id: string, type: PanelType, side: 'left' | 'right') => {
     if (side === 'left') {
-      router.push(`/dual-view/${type}/${id || 'null'}/${rightPanel.type || 'contact'}/${rightPanel.id || 'null'}`);
+      router.push(`/dual-view/${type}/${id || 'null'}/${rightPanel.type || 'contacts'}/${rightPanel.id || 'null'}`);
     } else {
-      router.push(`/dual-view/${leftPanel.type || 'contact'}/${leftPanel.id || 'null'}/${type}/${id || 'null'}`);
+      router.push(`/dual-view/${leftPanel.type || 'contacts'}/${leftPanel.id || 'null'}/${type}/${id || 'null'}`);
     }
   };
 
   const renderPanel = (panel: PanelState, side: 'left' | 'right') => {
     switch (panel.type) {
-      case 'contact':
+      case 'contacts':
         return panel.id && panel.id !== 'null' ? (
           <ContactDetails contactId={Number(panel.id)} />
         ) : (
-          <Contacts onContactClick={(id) => handlePanelSelect(String(id), 'contact', side)} />
+          <Contacts onContactClick={(id) => handlePanelSelect(String(id), 'contacts', side)} />
         );
-      case 'company':
-        return <div>Company View (Coming Soon)</div>;
+      case 'companies':
+        return panel.id && panel.id !== 'null' ? (  
+          <CompanyDetails companyId={Number(panel.id)} />
+        ) : (
+          <Companies onCompanyClick={(id) => handlePanelSelect(String(id), 'companies', side)} />
+        );
       case 'whiteboard':
         return <Whiteboard contactId={Number(panel.id)} />;
       default:
-        return <Contacts onContactClick={(id) => handlePanelSelect(String(id), 'contact', side)} />;
+        return <Contacts onContactClick={(id) => handlePanelSelect(String(id), 'contacts', side)} />;
     }
   };
 

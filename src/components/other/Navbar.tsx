@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CircleUserRound, MessageCircle } from "lucide-react";
-import SearchInput from "./SearchInput";
+import SearchInput from "./GlobalSearch";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
 export default function Navbar() {

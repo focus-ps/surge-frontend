@@ -66,24 +66,24 @@ export const contactsApi = {
     return data;
   },
 
-  getByCompany: async (companyId: number) => {
-    const { data } = await apiClient.get(`/company/${companyId}/contacts`);
-    return data;
-  },
+  // getByCompany: async (companyId: number) => {
+  //   const { data } = await apiClient.get(`/company/${companyId}/contacts`);
+  //   return data;
+  // },
 
-  create: async (contact: Omit<Contact, 'id'>) => {
-    const { data } = await apiClient.post('/contact', contact);
-    return data;
-  },
+  // create: async (contact: Omit<Contact, 'id'>) => {
+  //   const { data } = await apiClient.post('/contact', contact);
+  //   return data;
+  // },
 
-  update: async (id: number, contact: Partial<Contact>) => {
-    const { data } = await apiClient.patch(`/contact/${id}`, contact);
-    return data;
-  },
+  // update: async (id: number, contact: Partial<Contact>) => {
+  //   const { data } = await apiClient.patch(`/contact/${id}`, contact);
+  //   return data;
+  // },
 
-  delete: async (id: number) => {
-    await apiClient.delete(`/contact/${id}`);
-  },
+  // delete: async (id: number) => {
+  //   await apiClient.delete(`/contact/${id}`);
+  // },
 
   filter: async (params: {
     filters: Record<string, any>;

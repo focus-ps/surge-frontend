@@ -40,5 +40,13 @@ export const FOCUS_FIT_OPTIONS = [
     { label: 'Existing Relationship', value: 'existing_relationship' }
   ];
 
+export const MSA_EXPIRY_OPTIONS = [
+  { label: 'Within 3 months', value: '3_months' },
+  { label: 'Within 4-6 months', value: '4_6_months' },
+];
 
+export const YES_NO_OPTIONS = [
+  { label: 'Yes', value: 'true' },
+  { label: 'No', value: 'false' },
+];
 // Add more options as needed 

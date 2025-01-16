@@ -9,7 +9,7 @@ interface SearchInputProps {
   onSelect: (id: string | null, type: PanelType) => void;
 }
 
-type PanelType = 'contact' | 'company' | 'whiteboard';
+type PanelType = 'contacts' | 'companies' | 'whiteboard';
 
 export default function SearchInput({ onSelect }: SearchInputProps) {
   const [query, setQuery] = useState("");
@@ -23,11 +23,14 @@ export default function SearchInput({ onSelect }: SearchInputProps) {
     setActiveButton(buttonName);
     switch (buttonName.toLowerCase()) {
       case 'contacts':
-        onSelect('null', 'contact');
+        onSelect('null', 'contacts');
         break;
       case 'whiteboard':
         onSelect('null', 'whiteboard');
         break;
+      case 'companies':
+        onSelect('null', 'companies');
+        break;  
       // Add more cases as needed
     }
     setIsOpen(false);
@@ -72,7 +75,7 @@ export default function SearchInput({ onSelect }: SearchInputProps) {
               <button
                 key={contact.id}
                 onClick={() => {
-                  onSelect(String(contact.id), 'contact');
+                  onSelect(String(contact.id), 'contacts');
                   setIsOpen(false);
                   setQuery("");
                 }}

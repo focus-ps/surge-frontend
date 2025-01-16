@@ -2,42 +2,72 @@ import { NextResponse } from 'next/server';
 
 const BACKEND_URL = 'http://170.64.216.95:4050/api/v1';
 
-async function handler(
+export async function GET(
   request: Request,
-  { params }: { params: { path: string[] } },
-  method?: string
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
   try {
-    const path = params.path.join('/');
-    const options: RequestInit = {
-      method: method || request.method,
+    const resolvedParams = await params;
+    const path = resolvedParams.path.join('/');
+    const response = await fetch(`${BACKEND_URL}/${path}`, {
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': request.headers.get('Authorization') || '',
       },
-    };
-
-    if (method !== 'GET') {
-      options.body = await request.text();
-    }
-
-    const response = await fetch(`${BACKEND_URL}/${path}`, options);
+    });
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error('Proxy error:', error);
-    return NextResponse.json({ error: 'Proxy Error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-export async function GET(request: Request, context: { params: { path: string[] } }) {
-  return handler(request, context, 'GET');
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ path: string[] }> }
+) {
+  try {
+    const resolvedParams = await params;
+    const path = resolvedParams.path.join('/');
+    const body = await request.json();
+    
+    const response = await fetch(`${BACKEND_URL}/${path}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': request.headers.get('Authorization') || '',
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Proxy error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }
 
-export async function POST(request: Request, context: { params: { path: string[] } }) {
-  return handler(request, context, 'POST');
-}
-
-export async function PATCH(request: Request, context: { params: { path: string[] } }) {
-  return handler(request, context, 'PATCH');
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ path: string[] }> }
+) {
+  try {
+    const resolvedParams = await params;
+    const path = resolvedParams.path.join('/');
+    const body = await request.json();
+    
+    const response = await fetch(`${BACKEND_URL}/${path}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': request.headers.get('Authorization') || '',
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Proxy error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }

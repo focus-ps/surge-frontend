@@ -6,7 +6,13 @@ export const apiClient = axios.create({
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
   },
+  proxy: {
+    host: '170.64.216.95',
+    port: 4050,
+    protocol: 'http',
+  }
 });
+
 // Add interceptors for handling errors globally
 apiClient.interceptors.response.use(
   (response) => response,

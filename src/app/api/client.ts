@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const apiClient = axios.create({
-  baseURL: 'api/proxy',
+  baseURL: '/api/proxy',
   headers: {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,

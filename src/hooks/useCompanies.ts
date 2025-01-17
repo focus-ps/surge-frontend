@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { companiesApi, Company, CompanyFilterParams } from "../app/api/company";
+import { companiesApi, Company, CompanyFilterParams, Industry, AccountDirector, CompanyUpdate } from "../app/api/company";
 
 export const useCompanies = () => {
   return useQuery<Company[]>({
@@ -29,10 +29,30 @@ export const useFilterCompanies = (params:CompanyFilterParams) => {
   });
 };
 
-export const useUpdateCompany = () => {
-  return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<Company> }) => {
-      return await companiesApi.update(id, data);
-    }
+export const useIndustries = () => {
+  return useQuery<Industry[]>({
+    queryKey: ["industries"],
+    queryFn: companiesApi.getIndustries,
   });
 };
+
+export const useAccountDirectors = () => {
+  return useQuery<AccountDirector[]>({
+    queryKey: ["accountDirectors"],
+    queryFn: companiesApi.getAccountDirectors,
+  });
+};
+
+export function useUpdateCompany() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: Partial<CompanyUpdate> }) => {
+      return await companiesApi.update(id, data);
+    },
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ['companies'] });
+      queryClient.invalidateQueries({ queryKey: ['company', id] });
+    }
+  });
+}

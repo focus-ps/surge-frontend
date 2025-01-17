@@ -4,22 +4,21 @@ import { Loader2, AlertTriangle } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
 import { FormField } from "@/components/ui/FormField";
 import {
-  ACTION_OPTIONS,
-  CUSTOMER_TYPE_OPTIONS,
-  FOCUS_FIT_OPTIONS,
-  GENDER_OPTIONS,
-  SOURCE_OPTIONS,
   YES_NO_OPTIONS,
 } from "@/constants/options";
-import { useCompany, useUpdateCompany } from "@/hooks/useCompanies";
+import { useCompany, useUpdateCompany, useIndustries, useAccountDirectors } from "@/hooks/useCompanies";
+import Image from 'next/image';
+import { Company } from "@/app/api/company";
 
 interface CompanyDetailsProps {
   companyId: number;
 }
 
 export function CompanyDetails({ companyId }: CompanyDetailsProps) {
-  const updateCompany = useUpdateCompany();
   const { data: company, isLoading } = useCompany(companyId);
+  const { data: industries = [] } = useIndustries();
+  const { data: accountDirectors = [] } = useAccountDirectors();
+  const updateCompany = useUpdateCompany();
 
   if (isLoading) {
     return (
@@ -29,16 +28,45 @@ export function CompanyDetails({ companyId }: CompanyDetailsProps) {
     );
   }
 
-  const handleClientUpdate = (value: string | number | string[]) => {
-    updateCompany.mutate({
-      id: companyId,
-      data: {
-        client: value === 'yes'
-      }
-    });
+  const handleUpdate = (field: keyof Company, value: any) => {
+    let processedValue = value;
+    // Special processing for certain fields
+    switch (field) {
+      case 'founded':
+        processedValue = value ? Number(value) : null;
+        break;
+
+      case 'client':
+        processedValue = value === 'true';
+        break;
+
+      case 'company_industry_id':
+      case 'owner_id':
+        processedValue = value ? Number(value) : null;
+        break;
+    }
+      updateCompany.mutate({
+        id: companyId,
+        data: { [field]: processedValue }
+      });
+  
   };
 
+  const industryOptions = industries.map(industry => ({
+    label: industry.name,
+    value: industry.id.toString()
+  }));
+
+  const accountDirectorOptions = accountDirectors.map(accountDirector => ({
+    label: accountDirector.name,
+    value: accountDirector.id.toString()
+  }));
+
   if (!company) return null;
+
+  const currentIndustryName = industries.find(
+    industry => industry.id === company.company_industry_id
+  )?.name || 'Not specified';
 
   return (
     <div className="h-full bg-white dark:bg-gray-900 pt-4">
@@ -48,10 +76,12 @@ export function CompanyDetails({ companyId }: CompanyDetailsProps) {
           {/* Avatar Section */}
           <div className="relative w-[170px] h-[170px] bg-[#99D9A8] rounded-full flex items-center justify-center flex-shrink-0">
             <div className="w-[150px] h-[150px] rounded-full overflow-hidden">
-              <img
-                src={company.logo || "/avatar.png"}
-                alt=""
+              <Image
+                src={company.logo || "/business-avatar.png"}
+                alt="Company Logo"
                 className="w-full h-full object-cover"
+                width={150}
+                height={150}
               />
             </div>
           </div>
@@ -73,7 +103,7 @@ export function CompanyDetails({ companyId }: CompanyDetailsProps) {
               </div>
 
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {company.industry_name}
+                {currentIndustryName}
               </p>
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 {company.abn}
@@ -100,34 +130,57 @@ export function CompanyDetails({ companyId }: CompanyDetailsProps) {
             <h3 className="text-md font-medium bg-gray-200 dark:bg-gray-800 p-2 rounded-md">
               Overview
             </h3>
-            <div className="p-4 grid grid-cols-3 gap-4">
-              <FormField label="Company Name" value={company.name} required />
-              <FormField label="ABN" value={company.abn || ""} required />
-
+            <div className="p-4 grid grid-cols-2 gap-4">
+              <FormField 
+                label="Company Name" 
+                value={company.name} 
+                onChange={(value) => handleUpdate('name', value)}
+                required 
+              />
+                <FormField 
+                  label="ABN" 
+                  value={company.abn || ""} 
+                  onChange={(value) => handleUpdate('abn', value)}
+                  required 
+                />
               <FormField
                 label="Industry"
                 type="select"
-                options={GENDER_OPTIONS}
+                options={industryOptions}
+                value={company.company_industry_id?.toString()}
+                onChange={(value) => handleUpdate('company_industry_id', value)}
               />
-              <FormField label="Founded" value={`${company.founded}`} />
-
+              <FormField 
+                label="Founded" 
+                value={company.founded?.toString()}
+                onChange={(value) => handleUpdate('founded', value)}
+              />
               <FormField
                 label="Focus Client"
-                type="select"
-                options={ACTION_OPTIONS}
+                type="toggleGroup"
+                options={YES_NO_OPTIONS}
+                value={company.client?.toString()}
+                onChange={(value) => handleUpdate('client', value)}
               />
-              <FormField label="Record Owner" value={company.name || ""} />
+              <FormField 
+              label="Record Owner" 
+              type="select"
+              options={accountDirectorOptions}
+              value={company.owner_id?.toString()} 
+              onChange={(value) => handleUpdate('owner_id', value)}
+              />
             </div>
             <div className="p-4">
               <FormField
                 label="Postscript Notes - important additional information about this company"
                 type="textarea"
-                value={company.description || ""}
+                value={company.postscript_notes || ""}
                 rows={6}
-                // onChange={(value) => {
-                //   setSelectedSource(String(value));
-                // }}
+                onChange={(value) => handleUpdate('postscript_notes', value)}
               />
+            </div>
+            <div className="p-4 grid grid-cols-3 gap-4">
+
             </div>
           </section>
 
@@ -136,16 +189,7 @@ export function CompanyDetails({ companyId }: CompanyDetailsProps) {
             <h3 className="text-md font-medium bg-gray-200 dark:bg-gray-800 p-2 rounded-md">
               Email, Phone, Address
             </h3>
-            <div className="p-4 grid grid-cols-3 gap-4">
-              <FormField
-                label="Client"
-                type="toggleGroup"
-                options={YES_NO_OPTIONS}
-                value={company.client?.toString()}
-                onChange={(value) => {
-                  handleClientUpdate(value);
-                }}
-              />
+
               {/* <FormField
                 label="Work Email"
                 type="email"
@@ -159,7 +203,6 @@ export function CompanyDetails({ companyId }: CompanyDetailsProps) {
               <FormField label="Mobile" type="tel" value={company.mobile} />
               <FormField label="Phone (Other)" type="tel" />
               <FormField label="LinkedIn" type="text" /> */}
-            </div>
           </section>
           {/* Residential Address Section */}
           {/* <section className="mt-6">

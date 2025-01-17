@@ -14,6 +14,8 @@ import {
 import MultiSelect from "@/components/other/MultiSelect";
 import { useState } from "react";
 import ReminderTable from "./other/ReminderTable";
+import Image from 'next/image';
+
 
 interface ContactDetailsProps {
   contactId: number;
@@ -44,10 +46,12 @@ export function ContactDetails({ contactId }: ContactDetailsProps) {
           {/* Avatar Section */}
           <div className="relative w-[170px] h-[170px] bg-[#4E5BA6] rounded-full flex items-center justify-center flex-shrink-0">
             <div className="w-[150px] h-[150px] rounded-full overflow-hidden">
-              <img
+              <Image
                 src={contact.avatar || "/avatar.png"}
                 alt=""
                 className="w-full h-full object-cover"
+                width={150}
+                height={150}
               />
             </div>
             <div className="absolute w-[130px] h-[25px] -bottom-0 left-1/2 -translate-x-1/2 bg-[#4F46E5] text-white text-xs font-semibold flex items-center justify-center rounded-full">
